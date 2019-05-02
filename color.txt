@@ -1,0 +1,6 @@
+rouge
+bleu
+blanc
+noir
+orange
+vert
