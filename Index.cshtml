@@ -1,0 +1,91 @@
+﻿@using Cergi.Modules.Extenssions
+@using Cergi.Modules.Extenssions.Css
+@using CERGI.MODULES.EXTENSIONS
+<h2>&nbsp;</h2>
+@{
+    ViewBag.Title = "NATURE_FINANCEMENTS";
+    var Caption = "NATURE DE FINANCEMENTS";
+
+    //var Title =(string)ViewBag.Title.ToString();
+    string containerSize = "col-lg-6 col-lg-offset-3";
+    ViewBag.footer_size = "col-lg-12";
+    using (Html.CergiCadre(containerSize, Caption))
+    {
+        <div class="row col-lg-12 ">
+            @CergiHtml.TbrMain(ajouter: true, annuler: true, valider: true, supprimer: true, imprimer: true, rechercher: false, rechercher2: false, generer: false)
+        </div>
+        <div class="_row">
+            <div class="row">
+                <div class="col-lg-12 _mb10 ">
+                    @using (Html.CergiFieldset(""))
+                    {
+                        <div class="col-lg-4">
+                            <label>Nature de financement : </label>
+                        </div>
+                        <div class="col-lg-8">
+                            @CergiHtml.Input("NATFIN_LIBELLE")
+                        </div>
+                    }
+                </div>
+                <div class="col-lg-12">
+                    @using (Html.CergiFrame())
+                    {
+                        using (Html.CergiFieldset("Liste des Natures de financement"))
+                        {
+                            <div class="col-lg-12 _mt10 col-xs-12" id="NATURE_FINANCEMENTDiv">
+                                <table id="NATURE_FINANCEMENT" class="col-lg-12">
+                                    <thead class="table-heigth">
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        var Ecran = "NATURE_FINANCEMENT";
+        $(document).ready(function () {
+            AppelServeur('@(Url.Action("GetViewModel", "NATURE_FINANCEMENT", new { area = "Financements" }, null))',
+                load);
+        });
+
+        function load() {
+            AppelServeur(
+                '@(Url.Action("NATURE_FINANCEMENT_Load", "NATURE_FINANCEMENT", new { area = "Financements" }, null))',
+                null);
+        }
+
+
+        function AfficheInformations() {
+            var model = ReccupererModel();
+            if (model.statut === "ko") {
+                error_message(model.titreMessage, model.returnMessage, "confirmTitle");
+            } else if (model.statut === "end") {
+                success_message(model.titreMessage, model.returnMessage, "confirmTitle");
+            } else if (model.statut === "quiz") {
+                afficher_modal_confirm("500px", model.titreMessage, model.returnMessage, null, null);
+            } else if (model.statut === "OuiNon") {
+                afficher_modal_confirm_oui_non(400, model.titreMessage, model.returnMessage, null, null, null, null, "confirmTitle");
+            } else if (model.statut === "modal_SELECT_ETCIV") {
+                var varTache = "IBIS_GESBANC_COMPTE_CLIENT_FERMCPTE";
+                _RechercheEtciv(varTache);
+            }
+            model.statut = "";
+            EnregistrerModel(model);
+        }
+
+        function chargerEtciv(numMatricule, etcivNomReduit, typeInterv, change) {
+
+        }
+    </script>
+}
